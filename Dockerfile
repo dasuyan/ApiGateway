@@ -1,21 +1,23 @@
-FROM node:16 as development
-WORKDIR /usr/src/app
-COPY package*.json tsconfig.json ./
-RUN npm install
-COPY ./src ./src
-EXPOSE 80
-CMD [ "npm", "run", "start:dev" ]
+# Use official node image from docker
+FROM node:16
 
-FROM development as builder
+# Create application directory
+RUN mkdir -p /usr/src/app
+
+# Change this as work directory
 WORKDIR /usr/src/app
-RUN rm -rf node_modules
-RUN npm ci --only=production
-EXPOSE 80
-RUN npm run build
-CMD [ "npm", "start" ]
- 
-FROM alpine:latest as production
-RUN apk --no-cache add nodejs ca-certificates
-WORKDIR /root/
-COPY --from=builder /usr/src/app ./
-CMD [ "node", "./build/index.js" ]
+
+# Copy package.json to work directory
+COPY package*.json ./
+
+# Run npm install to install packages
+RUN npm install
+
+# Copy the application
+COPY . /usr/src/app
+
+# Expose port 3000
+EXPOSE 3000
+
+# Run the script to start server
+CMD [ "npm", "run", "start" ]
