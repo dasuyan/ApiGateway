@@ -5,6 +5,7 @@ const app = express()
 
 // Get the quotes api from the environment(refer docker-compose.yml)
 const QUOTES_API_GATEWAY = process.env.QUOTES_API
+const port = process.env.PORT ?? 3000;
 
 // Use CORS to prevent Cross-Origin Requets issue
 app.use(cors())
@@ -42,6 +43,6 @@ app.get('*', (req, res) => {
 });
 
 // starts the app
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log('API Gateway is listening on port 3000!')
 })
